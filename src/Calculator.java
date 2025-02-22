@@ -7,7 +7,9 @@ public class Calculator {
     StringTokenizer arrayCounter;
     String[] sepExpression;
     ArrayList<String> displayString;
+    String[] displayArray;
     Table table;
+    int varCount = 0;
 
     public Calculator(String expression) {
         this.expression = expression;
@@ -16,6 +18,14 @@ public class Calculator {
         Arrays.fill(sepExpression, "");
         displayString = new ArrayList<String>();
         table = new Table();
+    }
+
+    public void setup() {
+        createArray();
+        createDisplayArray();
+        addVarCols();
+        addNotCols();
+        System.out.println("\n" + table);
     }
 
     public void createArray() {
@@ -34,6 +44,7 @@ public class Calculator {
             for (int j = 0; j < sepExpression[i].length(); j++) {
                 if ((int)(sepExpression[i].charAt(j)) >= 97 && ((int)sepExpression[i].charAt(j)) <= 122 &&
                     !displayString.contains(Character.toString(sepExpression[i].charAt(j)))) {
+                    varCount++;
                     displayString.add(Character.toString(sepExpression[i].charAt(j)));
                 }
             }
@@ -124,7 +135,7 @@ public class Calculator {
 
         }
 
-        String[] displayArray = new String[displayString.size()];
+        displayArray = new String[displayString.size()];
         for (int i = 0; i < displayString.size(); i++) {
             displayArray[i] = displayString.get(i);
             System.out.print(displayArray[i] + "\n");
@@ -132,4 +143,49 @@ public class Calculator {
 
         return displayArray;
     }
+
+    public void addVarCols() {
+        for (int i = 0; i < varCount; i++) {
+            String[] col = new String[(int)Math.pow(varCount,2) + 1];
+            col[0] = displayArray[i];
+            int step = 0;
+            int interval = (int) Math.pow(2, i);
+            boolean change = true;
+            for (int j = 1; j < col.length; j++) {
+                col[j] = change ? "T" : "F";
+                step++;
+                if (step == interval) {
+                    step = 0;
+                    change = !change;
+                }
+            }
+
+            table.addCol(col);
+        }
+    }
+
+    public void addNotCols() {
+        for (int i = varCount; i < displayArray.length; i++) {
+            if (displayArray[i].contains("NOT") && displayArray[i].length() == 4) {
+                String var = displayArray[i].substring(3);
+                int column = findCol(var);
+                String[] col = new String[(int)Math.pow(varCount,2) + 1];
+                col[0] = displayArray[i];
+                for (int j = 1; j < col.length; j++) {
+                    col[j] = table.getTruth(j, column).equals("T") ? "F" : "T";
+                }
+                table.addCol(col);
+            }
+        }
+    }
+
+    public int findCol(String s) {
+        for (int i = 0; i < displayArray.length; i++) {
+            if (displayArray[i].equals(s)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }
