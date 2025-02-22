@@ -17,6 +17,10 @@ public class Table {
         return table.get(col)[row];
     }
 
+    public String getLast() {
+        return table.get(table.size() - 1)[0];
+    }
+
 
     public String getHeader(int col) {
         return table.get(col)[0];
