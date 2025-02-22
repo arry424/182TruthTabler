@@ -59,7 +59,7 @@ public class Calculator {
             if (sepExpression[i].contains("OR")) {
                 for (int j = i - 1; j >= 0; j--) {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP")) {
-                        before = sepExpression[j] + before;
+                        before = sepExpression[j] + " " + before;
                     }
                     else {
                         break;
@@ -67,13 +67,13 @@ public class Calculator {
                 }
                 for (int j = i + 1; j < sepExpression.length; j++) {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP") && !sepExpression[j].contains("OR")) {
-                        after = after + sepExpression[j];
+                        after = after + " " + sepExpression[j];
                     }
                     else {
                         break;
                     }
                 }
-                displayString.add(before + " OR " + after);
+                displayString.add(before + "OR" + after);
             }
 
         }
@@ -84,7 +84,7 @@ public class Calculator {
             if (sepExpression[i].contains("IMP")) {
                 for (int j = i - 1; j >= 0; j--) {
                     if (!sepExpression[j].contains("BI")) {
-                        before = sepExpression[j] + before;
+                        before = sepExpression[j] + " " + before;
                     }
                     else {
                         break;
@@ -93,13 +93,13 @@ public class Calculator {
 
                 for (int j = i + 1; j < sepExpression.length; j++) {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP")) {
-                        after = after + sepExpression[j];
+                        after = after + " " + sepExpression[j];
                     }
                     else {
                         break;
                     }
                 }
-                displayString.add(before + " IMP " + after);
+                displayString.add(before + "IMP" + after);
             }
 
         }
@@ -109,26 +109,25 @@ public class Calculator {
             String after = "";
             if (sepExpression[i].contains("BI")) {
                 for (int j = i - 1; j >= 0; j--) {
-                    before = sepExpression[j] + before;
+                    before = sepExpression[j] + " " +before;
                 }
                 for (int j = i + 1; j < sepExpression.length; j++) {
                     if (!sepExpression[j].contains("BI")) {
-                        after = after + sepExpression[j];
+                        after = after + " " + sepExpression[j];
                     }
                     else {
                         break;
                     }
                 }
-                displayString.add(before + " BI " + after);
+                displayString.add(before + "BI" + after);
             }
 
         }
 
         String[] displayArray = new String[displayString.size()];
-
         for (int i = 0; i < displayString.size(); i++) {
             displayArray[i] = displayString.get(i);
-            System.out.print(displayArray[i] + "\t");
+            System.out.print(displayArray[i] + "\n");
         }
 
         return displayArray;
