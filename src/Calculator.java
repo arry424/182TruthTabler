@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Calculator {
@@ -12,24 +13,19 @@ public class Calculator {
         this.expression = expression;
         arrayCounter = new StringTokenizer(expression, " ");
         sepExpression = new String[arrayCounter.countTokens()];
+        Arrays.fill(sepExpression, "");
         displayString = new ArrayList<String>();
         table = new Table();
     }
 
     public void createArray() {
-        int length = 0;
-        String loop = expression.substring(0,1);
         int count = 0;
-        int i = 1;
-        while (i < expression.length()) {
-            if (loop.equals(" ")) {
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.substring(i, i+1).equals(" ")) {
                 count++;
-                loop = expression.substring(i, i+1);
                 continue;
             }
-            sepExpression[count] += loop;
-            loop = expression.substring(i, i+1);
-            i++;
+            sepExpression[count] += expression.substring(i, i + 1);
         }
     }
 
@@ -58,13 +54,6 @@ public class Calculator {
         }
 
         for (int i = 0; i < sepExpression.length; i++) {
-            if (sepExpression[i].contains("AND") &&
-                    !displayString.contains(sepExpression[i - 1] + " AND " + sepExpression[i + 1])) {
-                displayString.add(sepExpression[i - 1] + " AND " + sepExpression[i + 1]);
-            }
-        }
-
-        for (int i = 0; i < sepExpression.length; i++) {
             String before = "";
             String after = "";
             if (sepExpression[i].contains("OR")) {
@@ -72,14 +61,21 @@ public class Calculator {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP")) {
                         before = sepExpression[j] + before;
                     }
+                    else {
+                        break;
+                    }
                 }
                 for (int j = i + 1; j < sepExpression.length; j++) {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP") && !sepExpression[j].contains("OR")) {
                         after = after + sepExpression[j];
                     }
+                    else {
+                        break;
+                    }
                 }
+                displayString.add(before + " OR " + after);
             }
-            displayString.add(before + " OR " + after);
+
         }
 
         for (int i = 0; i < sepExpression.length; i++) {
@@ -90,20 +86,28 @@ public class Calculator {
                     if (!sepExpression[j].contains("BI")) {
                         before = sepExpression[j] + before;
                     }
+                    else {
+                        break;
+                    }
                 }
+
                 for (int j = i + 1; j < sepExpression.length; j++) {
                     if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP")) {
                         after = after + sepExpression[j];
                     }
+                    else {
+                        break;
+                    }
                 }
+                displayString.add(before + " IMP " + after);
             }
-            displayString.add(before + " IMP " + after);
+
         }
 
         for (int i = 0; i < sepExpression.length; i++) {
             String before = "";
             String after = "";
-            if (sepExpression[i].contains("IMP")) {
+            if (sepExpression[i].contains("BI")) {
                 for (int j = i - 1; j >= 0; j--) {
                     before = sepExpression[j] + before;
                 }
@@ -111,9 +115,13 @@ public class Calculator {
                     if (!sepExpression[j].contains("BI")) {
                         after = after + sepExpression[j];
                     }
+                    else {
+                        break;
+                    }
                 }
+                displayString.add(before + " BI " + after);
             }
-            displayString.add(before + " BI " + after);
+
         }
 
         String[] displayArray = new String[displayString.size()];
