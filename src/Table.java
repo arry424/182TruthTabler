@@ -32,6 +32,10 @@ public class Table {
         return table.size();
     }
 
+    public String[] getColumn(int index) {
+        return table.get(index);
+    }
+
 
     public String toString() {
         String output = "";
