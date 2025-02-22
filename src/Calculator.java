@@ -25,6 +25,10 @@ public class Calculator {
         createDisplayArray();
         addVarCols();
         addNotCols();
+        addAndCols();
+        addOrCols();
+        addImpCols();
+        addBiCols();
         System.out.println("\n" + table);
     }
 
@@ -58,9 +62,27 @@ public class Calculator {
         }
 
         for (int i = 0; i < sepExpression.length; i++) {
-            if (sepExpression[i].contains("AND") &&
-                    !displayString.contains(sepExpression[i - 1] + " AND " + sepExpression[i + 1])) {
-                displayString.add(sepExpression[i - 1] + " AND " + sepExpression[i + 1]);
+            String before = "";
+            String after = "";
+            if (sepExpression[i].contains("AND")) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (!sepExpression[j].contains("OR") && !sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP")) {
+                        before = sepExpression[j] + " " + before;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                for (int j = i + 1; j < sepExpression.length; j++) {
+                    if (!sepExpression[j].contains("BI") && !sepExpression[j].contains("IMP") && !sepExpression[j].contains("OR")
+                        && !sepExpression[j].contains("AND")) {
+                        after = after + " " + sepExpression[j];
+                    }
+                    else {
+                        break;
+                    }
+                }
+                displayString.add(before + "AND" + after);
             }
         }
 
@@ -146,7 +168,7 @@ public class Calculator {
 
     public void addVarCols() {
         for (int i = 0; i < varCount; i++) {
-            String[] col = new String[(int)Math.pow(varCount,2) + 1];
+            String[] col = new String[(int)Math.pow(2, varCount) + 1];
             col[0] = displayArray[i];
             int step = 0;
             int interval = (int) Math.pow(2, i);
@@ -169,10 +191,93 @@ public class Calculator {
             if (displayArray[i].contains("NOT") && displayArray[i].length() == 4) {
                 String var = displayArray[i].substring(3);
                 int column = findCol(var);
-                String[] col = new String[(int)Math.pow(varCount,2) + 1];
+                String[] col = new String[(int)Math.pow(2, varCount) + 1];
                 col[0] = displayArray[i];
                 for (int j = 1; j < col.length; j++) {
                     col[j] = table.getTruth(j, column).equals("T") ? "F" : "T";
+                }
+                table.addCol(col);
+            }
+        }
+    }
+
+
+    //TODO add the AND OR IMP and BI cols
+    /*
+        Loop through the display array until one is found with the predicate operator
+        if (also contains a lower precedence operator)
+            ignore'
+        else
+            use the operator for AND or OR directly with whatever is on the left and right
+            special stuff for implies and bi
+                will probably be annoying
+     */
+
+    public void addAndCols() {
+        for (int i = varCount; i < displayArray.length; i++) {
+            if (displayArray[i].contains("AND") && (!displayArray[i].contains("OR") && !displayArray[i].contains("IMP") &&
+                    !displayArray[i].contains("BI"))) {
+                String before = displayArray[i].substring(0, displayArray[i].lastIndexOf("AND") - 1);
+                String after = displayArray[i].substring(displayArray[i].lastIndexOf("AND") + 4);
+                int columnBefore = findCol(before);
+                int columnAfter = findCol(after);
+                String[] col = new String[(int)Math.pow(2, varCount) + 1];
+                col[0] = displayArray[i];
+                for (int j = 1; j < col.length; j++) {
+                    col[j] = table.getTruth(j, columnBefore).equals("T") && table.getTruth(j, columnAfter).equals("T")? "T" : "F";
+                }
+                table.addCol(col);
+            }
+        }
+    }
+
+    public void addOrCols() {
+        for (int i = varCount; i < displayArray.length; i++) {
+            if (displayArray[i].contains("OR") && (!displayArray[i].contains("IMP") &&
+                    !displayArray[i].contains("BI"))) {
+                String before = displayArray[i].substring(0, displayArray[i].lastIndexOf("OR") - 1);
+                String after = displayArray[i].substring(displayArray[i].lastIndexOf("OR") + 3);
+                int columnBefore = findCol(before);
+                int columnAfter = findCol(after);
+                String[] col = new String[(int)Math.pow(2, varCount) + 1];
+                col[0] = displayArray[i];
+                for (int j = 1; j < col.length; j++) {
+                    col[j] = table.getTruth(j, columnBefore).equals("T") || table.getTruth(j, columnAfter).equals("T")? "T" : "F";
+                }
+                table.addCol(col);
+            }
+        }
+    }
+
+    public void addImpCols() {
+        for (int i = varCount; i < displayArray.length; i++) {
+            if (displayArray[i].contains("IMP") && (!displayArray[i].contains("BI"))) {
+                String before = displayArray[i].substring(0, displayArray[i].lastIndexOf("IMP") - 1);
+                String after = displayArray[i].substring(displayArray[i].lastIndexOf("IMP") + 4);
+                int columnBefore = findCol(before);
+                int columnAfter = findCol(after);
+                String[] col = new String[(int)Math.pow(2, varCount) + 1];
+                col[0] = displayArray[i];
+                for (int j = 1; j < col.length; j++) {
+                    col[j] = table.getTruth(j, columnBefore).equals("T") && table.getTruth(j, columnAfter).equals("F")? "F" : "T";
+                }
+                table.addCol(col);
+            }
+        }
+    }
+
+    public void addBiCols() {
+        for (int i = varCount; i < displayArray.length; i++) {
+            if (displayArray[i].contains("BI")) {
+                String before = displayArray[i].substring(0, displayArray[i].lastIndexOf("BI") - 1);
+                String after = displayArray[i].substring(displayArray[i].lastIndexOf("BI") + 3);
+                int columnBefore = findCol(before);
+                int columnAfter = findCol(after);
+                String[] col = new String[(int)Math.pow(2, varCount) + 1];
+                col[0] = displayArray[i];
+                for (int j = 1; j < col.length; j++) {
+                    col[j] = ((table.getTruth(j, columnBefore).equals("T") && table.getTruth(j, columnAfter).equals("T")) ||
+                              (table.getTruth(j, columnBefore).equals("F") && table.getTruth(j, columnAfter).equals("F")))  ? "T" : "F";
                 }
                 table.addCol(col);
             }
