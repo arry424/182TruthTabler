@@ -46,9 +46,12 @@ public class TableGUI extends JPanel {
                     gbc.gridx = curGridXLoc;
                     gbc.gridy = curGridYLoc;
                     JLabel text = new JLabel(table.getHeader(j));
-                    text.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+                    text.setFont(new Font("Arial", Font.PLAIN, 20));
                     text.setHorizontalAlignment(JLabel.CENTER);
                     text.setVerticalAlignment(JLabel.CENTER);
+                    if (j == table.getCols() - 1) {
+                        text.setFont(new Font("Arial", Font.BOLD, 20));
+                    }
 
                     text.setMinimumSize(new Dimension(colWidth, rowHeight * 2));
 
@@ -60,7 +63,10 @@ public class TableGUI extends JPanel {
                     gbc.gridx = curGridXLoc;
                     gbc.gridy = curGridYLoc;
                     JLabel text = new JLabel(table.getTruth(i, j));
-                    text.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
+                    text.setFont(new Font("Arial", Font.PLAIN, 15));
+                    if (j == table.getCols() - 1) {
+                        text.setFont(new Font("Arial", Font.BOLD, 15));
+                    }
                     text.setHorizontalAlignment(JLabel.CENTER);
                     this.add(text, gbc);
                     curGridXLoc++;
@@ -69,5 +75,20 @@ public class TableGUI extends JPanel {
             curGridXLoc = 0;
             curGridYLoc++;
         }
+    }
+
+    public boolean verifyString(String input) {
+        Calculator calc = new Calculator(input);
+        calc.setup();
+
+        Table table = calc.getTable();
+        for (int i = 0; i < table.getCols(); i++) {
+            String header = table.getHeader(i);
+            if (!header.contains("NOT") && !header.contains("AND") && !header.contains("OR") && !header.contains("BI")
+                && !header.contains("IMP") && !header.contains("^[a-z]+$")) {
+                return false;
+            }
+        }
+        return true;
     }
 }

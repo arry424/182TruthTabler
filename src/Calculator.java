@@ -198,8 +198,6 @@ public class Calculator {
                     change = !change;
                 }
             }
-
-
             table.addCol(col);
         }
     }
@@ -219,21 +217,6 @@ public class Calculator {
             }
         }
     }
-
-
-
-
-    //TODO add the AND OR IMP and BI cols
-   /*
-       Loop through the display array until one is found with the predicate operator
-       if (also contains a lower precedence operator)
-           ignore'
-       else
-           use the operator for AND or OR directly with whatever is on the left and right
-           special stuff for implies and bi
-               will probably be annoying
-    */
-
 
     public void addAndCols() {
         for (int i = varCount; i < displayArray.length; i++) {
@@ -323,7 +306,5 @@ public class Calculator {
     public Table getTable() {
         return table;
     }
-
-
 }
 

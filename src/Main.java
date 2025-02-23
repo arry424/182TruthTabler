@@ -8,7 +8,7 @@ public class Main extends JComponent {
     private static JButton no;
     private static JDialog dialog;
     public static void main(String[] args) {
-        UIManager.put("OptionPane.minimumSize", new Dimension(2000,1000));
+        UIManager.put("OptionPane.minimumSize", new Dimension(500,500));
         UIManager.put("OptionPane.background", Color.WHITE);
         UIManager.put("Panel.background", Color.WHITE);
         JTextArea rules = new JTextArea("Welcome to Truth Tabler! Before we get started, " +
@@ -16,13 +16,13 @@ public class Main extends JComponent {
                 "and operators must be seperated by a space with the exception of negation.\n3. Operators must be typed" +
                 " in all caps. Valid operators are: NOT, AND, OR, IMP, BI\n4. Variables must be in lowercase.\nExample: " +
                 "NOTp AND r BI NOTq OR s IMP p\nDo you understand?");
-        rules.setFont(new Font("Comic Sans MS", Font.BOLD, 45));
+        rules.setFont(new Font("Times New Roman", Font.PLAIN, 30));
         JOptionPane pane = new JOptionPane(rules, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
                 new Object[]{}, null);
         yes = new JButton(" YES ");
         no = new JButton(" NO ");
-        yes.setFont(new Font("Comic Sans MS", Font.BOLD, 60));
-        no.setFont(new Font("Comic Sans MS", Font.BOLD, 60));
+        yes.setFont(new Font("Times New Roman", Font.BOLD, 60));
+        no.setFont(new Font("Times New Roman", Font.PLAIN, 60));
         yes.setPreferredSize(new Dimension(250, 125));
         no.setPreferredSize(new Dimension(250, 125));
         yes.addActionListener(actionListener);
@@ -38,10 +38,6 @@ public class Main extends JComponent {
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-
-        /*int understood = JOptionPane.showConfirmDialog(null, rules, "Do you understand?",
-                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
-
     }
     private static ActionListener actionListener = new ActionListener() {
         @Override
@@ -51,7 +47,28 @@ public class Main extends JComponent {
             }
             if (e.getSource() == yes) {
                 dialog.setVisible(false);
-                JOptionPane.showInputDialog(null, "Enter your expression");
+                boolean formatted = false;
+
+                JTextArea enter = new JTextArea("Enter your expression:");
+                enter.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+                String input = JOptionPane.showInputDialog(null, enter);
+                /*while (!formatted) {
+                    TableGUI temp = new TableGUI(input);
+                    if (!temp.verifyString(input)) {
+                        JOptionPane.showMessageDialog(null, "String incorrectly formatted. Please " +
+                                "try again.", "Error!", JOptionPane.ERROR_MESSAGE);
+                    }
+                }*/
+                JFrame frame = new JFrame("Truth Table");
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                TableGUI tableGui = new TableGUI(input);
+                JScrollPane scrollPane = new JScrollPane(tableGui, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                frame.add(scrollPane);
+
+                frame.setVisible(true);
             }
         }
     };
