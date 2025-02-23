@@ -47,22 +47,26 @@ public class Main extends JComponent {
             }
             if (e.getSource() == yes) {
                 dialog.setVisible(false);
-                boolean formatted = false;
 
                 JTextArea enter = new JTextArea("Enter your expression:");
                 enter.setFont(new Font("Times New Roman", Font.PLAIN, 30));
                 String input = JOptionPane.showInputDialog(null, enter);
-                /*while (!formatted) {
-                    TableGUI temp = new TableGUI(input);
-                    if (!temp.verifyString(input)) {
-                        JOptionPane.showMessageDialog(null, "String incorrectly formatted. Please " +
-                                "try again.", "Error!", JOptionPane.ERROR_MESSAGE);
-                    }
-                }*/
+                /*
+                boolean formatted = verifyString(input);
+                while (!formatted) {
+                    JOptionPane.showMessageDialog(null, "String incorrectly formatted. Please try " +
+                            "again.", "Error!", JOptionPane.ERROR_MESSAGE);
+                    input = JOptionPane.showInputDialog(null, enter);
+                    //formatted = verifyString(input);
+
+                }
+
+                 */
+
+                TableGUI tableGui = new TableGUI(input);
                 JFrame frame = new JFrame("Truth Table");
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                TableGUI tableGui = new TableGUI(input);
                 JScrollPane scrollPane = new JScrollPane(tableGui, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -72,5 +76,21 @@ public class Main extends JComponent {
             }
         }
     };
+    /*
+    public static boolean verifyString(String input) {
+        Calculator calc = new Calculator(input);
+        calc.setup();
 
+        Table table = calc.getTable();
+        for (int i = 0; i < table.getCols(); i++) {
+            String header = table.getHeader(i);
+            if (!header.contains("NOT") && !header.contains("AND") && !header.contains("OR") && !header.contains("BI")
+                    && !header.contains("IMP") && !(header.matches("^[a-z]+$") && header.length() == 1) &&  !header.matches(".*NOT[a-z].*")) {
+                return false;
+            }
+        }
+        return true;
+    }
+    */
 }
+
